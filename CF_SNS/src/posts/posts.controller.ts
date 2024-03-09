@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
 import { PostsService } from './posts.service';
 
 /**
@@ -61,7 +61,14 @@ export class PostsController {
   @Get(':id')
   // @Params([value])안에 선언한 값(value)으로 url의 있는 값과 같은 이름의 값을 가져올수 있음
   getPost(@Param('id') id: string) {
-    return posts.find((post) => post.id === +id);
+    const post = posts.find((post) => post.id === +id);
+
+    if (!post) {
+      // 없으면 NotFound 에러 반환
+      throw new NotFoundException();
+    }
+
+    return post;
   }
 
   // 3) POST /posts
