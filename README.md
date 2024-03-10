@@ -7,4 +7,5 @@
 
 
 ## Service
--  Controller에서 받은 요청에 관한 로직들을 작성.  
+- Controller에서 받은 요청에 관한 로직들을 작성.
+- 테이터를 다루는 로직을 작성하는 클래스를 Service 라고 부름. 

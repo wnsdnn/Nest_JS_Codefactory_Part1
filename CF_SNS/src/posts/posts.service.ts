@@ -44,6 +44,7 @@ let posts: PostModel[] = [
 ];
 
 @Injectable()
+// @Injectable을 써줘야지 Provider에서 사용할수 있음.
 export class PostsService {
   getAllPosts() {
     return posts;
