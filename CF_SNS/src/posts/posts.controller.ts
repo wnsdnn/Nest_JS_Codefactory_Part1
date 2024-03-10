@@ -56,6 +56,10 @@ let posts: PostModel[] = [
 
 @Controller('posts')
 export class PostsController {
+  // private readonly => this.postService(해당 클래스에 멤버변수) = postsService;
+  // 해당 코드와 같은 의미
+  // Nest JS에 기본적인 아키택처 구조 때문에 Controller가 있단 소린 Service가 반드시
+  // 존재하기 때문에 Controller 파일을 생성하면 Service를 자동으로 연결해준다.
   constructor(private readonly postsService: PostsService) {}
 
   // 1) GET / posts
