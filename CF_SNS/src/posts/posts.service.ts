@@ -55,18 +55,23 @@ let posts: PostModel[] = [
 export class PostsService {
   constructor(
     @InjectRepository(PostsModel)
-    private readonly postsRespository: Repository<PostsModel>,
+    private readonly postsRepository: Repository<PostsModel>,
   ) {}
 
   async getAllPosts() {
-    return this.postsRespository.find();
+    return this.postsRepository.find();
   }
 
-  getPostById(id: number) {
-    const post = posts.find((post) => post.id === +id);
+  async getPostById(id: number) {
+    // Repository로 받는 모든 값들은 비동기이기 때문에 async 사용
+    const post = await this.postsRepository.findOne({
+      where: {
+        // id: id,
+        id,
+      },
+    });
 
     if (!post) {
-      // 없으면 NotFound 에러 반환
       throw new NotFoundException();
     }
 
