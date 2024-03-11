@@ -78,23 +78,25 @@ export class PostsService {
     return post;
   }
 
-  createPost(author: string, title: string, content: string) {
+  async createPost(author: string, title: string, content: string) {
+    // 기억해야할 메소드 2개
+    // 1) create -> 저장할 객체를 생성한다.
+    // 2) save -> 객체를 저장한다. (create 메서드에서 생성한 객체로)
     if (!author || !title || !content) {
       throw new BadRequestException();
     }
 
-    const post: PostModel = {
-      id: posts[posts.length - 1].id + 1,
+    const post = this.postsRepository.create({
       author,
       title,
       content,
       likeCount: 0,
       commentCount: 0,
-    };
+    });
 
-    posts.push(post);
+    const newPost = await this.postsRepository.save(post);
 
-    return post;
+    return newPost;
   }
 
   updatePost(postId: number, author: string, title: string, content: string) {

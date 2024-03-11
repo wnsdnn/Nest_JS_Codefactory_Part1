@@ -9,9 +9,7 @@ import { PostsModel } from './entities/posts.entity';
   imports: [
     // Repository를 만들때는 forFeature() 사용
     // TypeOrm이 자동으로 Repository를 생성해준다.
-    TypeOrmModule.forFeature([
-      PostsModel,
-    ]),
+    TypeOrmModule.forFeature([PostsModel]),
   ],
   // controllers에 PostsController를 주입해주었기 때문에
   // 프로젝트에서 특정 url로 접근시 postsController를 실행해준다.

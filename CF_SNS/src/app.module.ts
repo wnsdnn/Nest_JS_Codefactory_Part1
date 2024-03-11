@@ -19,9 +19,7 @@ import { PostsModel } from './posts/entities/posts.entity';
       password: 'postgres',
       database: 'postgres',
       // entity를 등록
-      entities: [
-        PostsModel,
-      ],
+      entities: [PostsModel],
       synchronize: true,
     }),
   ],
