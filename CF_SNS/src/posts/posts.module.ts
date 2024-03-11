@@ -1,9 +1,18 @@
 import { Module } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { PostsController } from './posts.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { PostsModel } from './entities/posts.entity';
 
 // 여기 선언하면 IocContainer가 인지할수 있음
 @Module({
+  imports: [
+    // Repository를 만들때는 forFeature() 사용
+    // TypeOrm이 자동으로 Repository를 생성해준다.
+    TypeOrmModule.forFeature([
+      PostsModel,
+    ]),
+  ],
   // controllers에 PostsController를 주입해주었기 때문에
   // 프로젝트에서 특정 url로 접근시 postsController를 실행해준다.
   controllers: [PostsController],

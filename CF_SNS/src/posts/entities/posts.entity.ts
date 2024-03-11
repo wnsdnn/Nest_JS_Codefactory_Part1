@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class PostModel {
+export class PostsModel {
   // 모든 Entiry 클래스에는 primaryColumn이 무조건 있어야한다.
   // PrimaryGeneratedColumn - 자동으로 id 배정
   @PrimaryGeneratedColumn()

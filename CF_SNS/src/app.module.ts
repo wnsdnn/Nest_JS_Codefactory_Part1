@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PostsModule } from './posts/posts.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PostModel } from './posts/entities/posts.entity';
+import { PostsModel } from './posts/entities/posts.entity';
 
 @Module({
   // imports - 다른 모듈을 불러올때 사용
@@ -20,7 +20,7 @@ import { PostModel } from './posts/entities/posts.entity';
       database: 'postgres',
       // entity를 등록
       entities: [
-        PostModel,
+        PostsModel,
       ],
       synchronize: true,
     }),

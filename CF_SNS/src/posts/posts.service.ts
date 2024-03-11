@@ -1,4 +1,11 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { PostsModel } from './entities/posts.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 /**
  * author: string;
@@ -46,6 +53,11 @@ let posts: PostModel[] = [
 @Injectable()
 // @Injectable을 써줘야지 Provider에서 사용할수 있음.
 export class PostsService {
+  constructor(
+    @InjectRepository(PostsModel)
+    private readonly postsRespository: Repository<PostsModel>,
+  ) {}
+
   getAllPosts() {
     return posts;
   }
