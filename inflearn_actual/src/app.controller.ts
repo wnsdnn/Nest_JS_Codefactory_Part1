@@ -13,13 +13,18 @@ export class AppController {
   @Post('users')
   async createPostUser() {
     return await this.userRepository.save({
-      title: 'test title',
+      // title: 'test title',
     });
   }
 
   @Get('users')
   async getUsers() {
-    return await this.userRepository.find();
+    return await this.userRepository.find({
+      select: {
+        id: true,
+        title: true,
+      },
+    });
   }
 
   @Patch('user/:id')
