@@ -1,5 +1,5 @@
 
-## 
+## Dependency Injection / Inversion of Control
 의존성 주입과 제어의 역전 (서비스에 대한 권한과 접급이 가능했던 이유)
 
 <br>
