@@ -3,10 +3,15 @@ import {
   CreateDateColumn,
   Entity,
   Generated,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   VersionColumn,
 } from 'typeorm';
+import { ProfileModel } from './profile.entity';
+import { PostModel } from './post.entity';
 
 export enum Role {
   USER = 'user',
@@ -31,31 +36,34 @@ export class UserModel {
   id: number;
 
   // 제목
-  @Column({
-    // 데이터베이스에서 인지하는 컬럼 타입
-    // 자동으로 유추됨
-    type: 'varchar',
-    // 데이터베이스 컬럼 이름
-    // 프로퍼티 이름으로 자동 유추됨
-    name: 'title',
-    // 값의 길이
-    // 입력 할 수 있는 글자의 길이가 300
-    length: 300,
-    // null이 가능한지
-    nullable: true,
-    // true면 처음 저장할때만 값 지정 가능
-    // 이후에는 값 변경 불가능,
-    update: true,
-    // find()를 실행할때 기본으로 값을 불러올지
-    // 기본값이 true,
-    select: false,
-    // 기본 값
-    // 아무것도 입력 안했을때 기본으로 입력되게 되는 값
-    default: 'default value',
-    // 컴럼주에서 유일무이한 값이 돼어야하는지
-    unique: false,
-  })
-  title: string;
+  // @Column({
+  //   // 데이터베이스에서 인지하는 컬럼 타입
+  //   // 자동으로 유추됨
+  //   type: 'varchar',
+  //   // 데이터베이스 컬럼 이름
+  //   // 프로퍼티 이름으로 자동 유추됨
+  //   name: 'title',
+  //   // 값의 길이
+  //   // 입력 할 수 있는 글자의 길이가 300
+  //   length: 300,
+  //   // null이 가능한지
+  //   nullable: true,
+  //   // true면 처음 저장할때만 값 지정 가능
+  //   // 이후에는 값 변경 불가능,
+  //   update: true,
+  //   // find()를 실행할때 기본으로 값을 불러올지
+  //   // 기본값이 true,
+  //   select: false,
+  //   // 기본 값
+  //   // 아무것도 입력 안했을때 기본으로 입력되게 되는 값
+  //   default: 'default value',
+  //   // 컴럼주에서 유일무이한 값이 돼어야하는지
+  //   unique: false,
+  // })
+  // title: string;
+
+  @Column()
+  email: string;
 
   // // 특정 값들로 컬럼의 값을 제한하고 싶을때 사용
   // @Column({
@@ -88,4 +96,12 @@ export class UserModel {
   @Column()
   @Generated('uuid')
   additionalId: string;
+
+  // ProfileModel과 1대1 연동
+  @OneToOne(() => ProfileModel, (profile) => profile.user)
+  @JoinColumn()
+  profile: ProfileModel;
+
+  @OneToMany(() => PostModel, (post) => post.author)
+  posts: PostModel[];
 }
