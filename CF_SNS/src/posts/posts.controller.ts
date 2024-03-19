@@ -37,11 +37,11 @@ export class PostsController {
   // POST를 생성한다.
   @Post()
   postPost(
-    @Body('author') author: string,
+    @Body('authorId') authorId: number,
     @Body('title') title: string,
     @Body('content') content: string,
   ) {
-    return this.postsService.createPost(author, title, content);
+    return this.postsService.createPost(authorId, title, content);
   }
 
   // 4) PATCH /posts/:id
@@ -49,11 +49,10 @@ export class PostsController {
   @Patch(':id')
   patchPost(
     @Param('id') id: string,
-    @Body('author') author?: string,
     @Body('title') title?: string,
     @Body('content') content?: string,
   ) {
-    return this.postsService.updatePost(+id, author, title, content);
+    return this.postsService.updatePost(+id, title, content);
   }
 
   // 5) DELETE /posts/:id
