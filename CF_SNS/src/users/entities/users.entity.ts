@@ -10,10 +10,19 @@ export class UserModel {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  // 1) 길이가 20을 넘지 않을 것
+  // 2) 유일무이한 값이 될 것
+  @Column({
+    type: 'varchar',
+    length: 20,
+    unique: true,
+  })
   nickname: string;
 
-  @Column()
+  // 1) 유일무이한 값이 될 것
+  @Column({
+    unique: true,
+  })
   email: string;
 
   @Column()
