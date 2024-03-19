@@ -4,15 +4,17 @@ import { Role, UserModel } from './entity/user.entity';
 import {
   Between,
   Equal,
-  ILike, In, IsNull,
+  ILike,
+  In,
+  IsNull,
   LessThan,
   LessThanOrEqual,
   Like,
   MoreThan,
   MoreThanOrEqual,
   Not,
-  Repository
-} from "typeorm";
+  Repository,
+} from 'typeorm';
 import { ProfileModel } from './entity/profile.entity';
 import { PostModel } from './entity/post.entity';
 import { TagModel } from './entity/tag.entity';
@@ -29,6 +31,94 @@ export class AppController {
     @InjectRepository(TagModel)
     private readonly tagRepository: Repository<TagModel>,
   ) {}
+
+  @Post('sample')
+  async sample() {
+    // 모델에 해당되는 객체 생성 - 저장은 안함
+    // const user1 = this.userRepository.create({
+    //   email: 'test@codefactory.ai',
+    // });
+
+    // 저장
+    // const user2 = await this.userRepository.save({
+    //   email: 'test@codefactory.ai',
+    // });
+
+    // preload
+    // 입력된 값을 기반으로 데이터베이스에 있는 데이터를 불러오고
+    // 추가 입력된 값으로 데이터베이스에서 가져온 값들을 대체함.
+    // 저장하지는 않음
+    // const user3 = await this.userRepository.preload({
+    //   id: 101,
+    //   email: 'codefactory@codefactory.ai',
+    // });
+
+    // 삭제하기
+    // await this.userRepository.delete(101);
+
+    // 특정 컬럼의 값을 원하는 값만큼 증가시킬수 있다.
+    // await this.userRepository.increment(
+    //   {
+    //     id: 1,
+    //   },
+    //   'count',
+    //   2,
+    // );
+
+    // increment와 반대개념 (값을 감소시킴)
+    // await this.userRepository.decrement(
+    //   {
+    //     id: 1,
+    //   },
+    //   'count',
+    //   1,
+    // );
+
+    // 갯수 카운팅하기
+    // const count = await this.userRepository.count({
+    //   where: {
+    //     email: ILike('%0%'),
+    //   },
+    // });
+
+    // sum (합계)
+    // const sum = await this.userRepository.sum('count', {
+    //   email: ILike('%0%'),
+    // });
+
+    // average (평균)
+    // const average = await this.userRepository.average('count', {
+    //   id: LessThan(4),
+    // });
+
+    // 최소값
+    // const min = await this.userRepository.minimum('count', {
+    //   id: LessThan(4),
+    // });
+
+    // 최대값
+    // const max = await this.userRepository.maximum('count', {
+    //   id: LessThan(4),
+    // });
+
+    // const users = await this.userRepository.find({
+    //
+    // });
+
+    // 조건에 맞는값이 여러개 있어도 젤 처음에 1번째 값만 가져옴
+    // const userOne = await this.userRepository.findOne({
+    //   where: {
+    //     id: 3,
+    //   },
+    // });
+
+    // 조건에 맞는값들 + 조건을 안걸었을때 나올 값들의 개수를 반환
+    const userAndCount = await this.userRepository.findAndCount({
+      take: 3,
+    });
+
+    return userAndCount;
+  }
 
   @Post('users')
   async postUser() {
@@ -47,6 +137,12 @@ export class AppController {
   @Get('users')
   getUsers() {
     return this.userRepository.find({
+      // 오름차순, 내림차순
+      // ASC -> 오름차순
+      // DESC -> 내림차순
+      order: {
+        id: 'asc',
+      },
       // 필터링할 조건을 입력하게된다. (AND 조건)
       where: {
         // Not() - 아닌경우 가져오기
@@ -101,12 +197,6 @@ export class AppController {
       // select나 where에서 사용할수 있음
       // relations: {
       //   profile: true,
-      // },
-      // 오름차순, 내림차순
-      // ASC -> 오름차순
-      // DESC -> 내림차순
-      // order: {
-      //   id: 'DESC',
       // },
       // 처음 몇개를 제외할지 (default: 0),
       // skip: 0,
