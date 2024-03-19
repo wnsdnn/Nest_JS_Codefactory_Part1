@@ -1,10 +1,17 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { RolesEnum } from './const/foles.const';
 
-export enum RolesEnum {
-  USER = 'user',
-  ADMIN = 'admin',
-}
-
+/**
+ * id: number;
+ *
+ * nickname: string;
+ *
+ * email: string
+ *
+ * password: string
+ *
+ * role: [RoleEnum.USER, RoleEnum.ADMIN]
+ */
 @Entity()
 export class UserModel {
   @PrimaryGeneratedColumn()
@@ -28,6 +35,10 @@ export class UserModel {
   @Column()
   password: string;
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: Object.values(RolesEnum),
+    default: RolesEnum.USER,
+  })
   role: RolesEnum;
 }
