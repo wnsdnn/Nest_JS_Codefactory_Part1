@@ -25,9 +25,7 @@ export class UsersService {
 
   async getAllUsers() {
     return this.usersRepository.find({
-      relations: {
-        posts: true,
-      },
+      relations: ['posts'],
     });
   }
 }
