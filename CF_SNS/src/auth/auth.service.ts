@@ -5,6 +5,8 @@ import { JWT_SECRET } from './const/auth.const';
 
 @Injectable()
 export class AuthService {
+  // 만약 Nest can't resolve dependencies ... 에러가 난다면 해당 오류 맨 끝에
+  // ooModule 클래스의 imports문을 확인
   constructor(private readonly jwtService: JwtService) {}
 
   /**
