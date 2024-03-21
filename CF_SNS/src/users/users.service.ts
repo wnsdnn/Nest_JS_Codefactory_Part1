@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UsersModel } from './entities/users.entity';
 import { Repository } from 'typeorm';
 import { UsersModule } from './users.module';
+import e from 'express';
 
 @Injectable()
 export class UsersService {
@@ -26,6 +27,14 @@ export class UsersService {
   async getAllUsers() {
     return this.usersRepository.find({
       relations: ['posts'],
+    });
+  }
+
+  async getUserByEmail(email: string) {
+    return await this.usersRepository.findOne({
+      where: {
+        email: email,
+      },
     });
   }
 }
