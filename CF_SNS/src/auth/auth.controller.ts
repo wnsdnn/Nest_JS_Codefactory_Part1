@@ -1,16 +1,25 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Headers,
+  Post,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { rethrow } from '@nestjs/core/helpers/rethrow';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login/email')
-  loginEmail(@Body('email') email: string, @Body('password') password: string) {
-    return this.authService.loginWithEmail({
-      email,
-      password,
-    });
+  async loginEmail(@Headers('authorization') rawToken: string) {
+    // email:password 된것이 base64로 인코딩되어있다.
+    const token = this.authService.extractTokenFromHeader(rawToken, false);
+
+    const credentials = this.authService.decodeBasicToken(token);
+
+    return this.authService.loginWithEmail(credentials);
   }
 
   @Post('register/email')

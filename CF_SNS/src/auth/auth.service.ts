@@ -49,7 +49,7 @@ export class AuthService {
    * {authorization: 'Basic {token}'}
    * {authorization: 'Bearer {token}'}
    */
-  async extractTokenFromHeader(header: string, isBearer: boolean) {
+  extractTokenFromHeader(header: string, isBearer: boolean) {
     const splitToken = header.split(' ');
 
     const prefix = isBearer ? 'Bearer' : 'Basic';
@@ -61,6 +61,30 @@ export class AuthService {
     const token = splitToken[1];
 
     return token;
+  }
+
+
+  /**
+   * Basic {token}
+   *
+   * 1) base64로 인코딩된 token의 값을 email:password 형태로 디코딩한다.
+   * 2) email:password -> [email, password]
+   * 3) return {email: email, password: password}
+   */
+  decodeBasicToken(base64String: string) {
+    // Buffer -> nodejs에서 기본제공
+    const decoded = Buffer.from(base64String, 'base64').toString('utf8');
+
+    const split = decoded.split(':');
+
+    if (split.length !== 2) {
+      throw new UnauthorizedException('잘못된 유형의 토근입니다.');
+    }
+
+    const email = split[0];
+    const password = split[1];
+
+    return { email, password };
   }
 
   /**
