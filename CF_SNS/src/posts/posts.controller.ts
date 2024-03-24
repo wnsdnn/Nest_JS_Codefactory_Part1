@@ -3,7 +3,7 @@ import {
   Controller,
   Delete,
   Get,
-  Param,
+  Param, ParseIntPipe,
   Patch,
   Post,
 } from '@nestjs/common';
@@ -29,8 +29,11 @@ export class PostsController {
   // 예를 들어 id: 1인경구 id가 1인 포스트를 가져온다.
   @Get(':id')
   // @Params([value])안에 선언한 값(value)으로 url의 있는 값과 같은 이름의 값을 가져올수 있음
-  getPost(@Param('id') id: string) {
-    return this.postsService.getPostById(+id);
+  //
+  // ParseIntPipe를 써서 id를 number값으로 취급
+  // Pipe에서 number로 바꿀수 없는 값이 들어왔을땐 Pipe에서 에러도 발생시켜줌
+  getPost(@Param('id', ParseIntPipe) id: number) {
+    return this.postsService.getPostById(id);
   }
 
   // 3) POST /posts
@@ -48,17 +51,17 @@ export class PostsController {
   // id에 해당되는 POST를 변경한다.
   @Patch(':id')
   patchPost(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body('title') title?: string,
     @Body('content') content?: string,
   ) {
-    return this.postsService.updatePost(+id, title, content);
+    return this.postsService.updatePost(id, title, content);
   }
 
   // 5) DELETE /posts/:id
   // id에 해당되는 POST를 삭제한다.
   @Delete(':id')
-  deletePost(@Param('id') id: string) {
-    this.postsService.deletePost(+id);
+  deletePost(@Param('id', ParseIntPipe) id: number) {
+    this.postsService.deletePost(id);
   }
 }
