@@ -1,19 +1,43 @@
 import {
   Body,
-  Controller,
+  Controller, Header,
   Headers,
   Post,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { rethrow } from '@nestjs/core/helpers/rethrow';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Post('token/access')
+  postTokenAccess(@Headers('authorization') rawToken: string) {
+    // 헤더로 받은 RefreshToken의 값을 검증 및 토큰값만 리턴
+    const token = this.authService.extractTokenFromHeader(rawToken, true);
+    // 리턴한 토큰값을 가지고 accessToken값 불러오기
+    const newToken = this.authService.rotateToken(token, false);
+
+    /**
+     * { accessToken: {token} }
+     */
+    return { accessToken: newToken };
+  }
+
+  @Post('token/refresh')
+  postTokenRefresh(@Headers('authorization') rawToken: string) {
+    // 헤더로 받은 RefreshToken의 값을 검증 및 토큰값만 리턴
+    const token = this.authService.extractTokenFromHeader(rawToken, true);
+    // 리턴한 토큰값을 가지고 accessToken값 불러오기
+    const newToken = this.authService.rotateToken(token, true);
+
+    /**
+     * { accessToken: {token} }
+     */
+    return { refreshToken: newToken };
+  }
+
   @Post('login/email')
-  async loginEmail(@Headers('authorization') rawToken: string) {
+  async postLoginEmail(@Headers('authorization') rawToken: string) {
     // email:password 된것이 base64로 인코딩되어있다.
     const token = this.authService.extractTokenFromHeader(rawToken, false);
 
@@ -23,7 +47,7 @@ export class AuthController {
   }
 
   @Post('register/email')
-  registerEmail(
+  postRegisterEmail(
     @Body('nickname') nickname: string,
     @Body('email') email: string,
     @Body('password') password: string,
