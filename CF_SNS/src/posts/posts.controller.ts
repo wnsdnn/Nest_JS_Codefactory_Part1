@@ -44,7 +44,7 @@ export class PostsController {
     @Body('title') title: string,
     @Body('content') content: string,
     // isPublic 값을 보내주지 않는다면 기본값을 true로 설정
-    @Body('isPublic', new DefaultValuePipe(true)) isPublic: boolean,
+    // @Body('isPublic', new DefaultValuePipe(true)) isPublic: boolean,
   ) {
     return this.postsService.createPost(authorId, title, content);
   }
