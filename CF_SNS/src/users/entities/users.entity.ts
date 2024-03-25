@@ -1,4 +1,11 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { RolesEnum } from './const/foles.const';
 import { PostModel } from '../../posts/posts.service';
 import { PostsModel } from '../../posts/entities/posts.entity';
@@ -8,11 +15,15 @@ import { PostsModel } from '../../posts/entities/posts.entity';
  *
  * nickname: string;
  *
- * email: string
+ * email: string;
  *
- * password: string
+ * password: string;
  *
- * role: [RoleEnum.USER, RoleEnum.ADMIN]
+ * role: [RoleEnum.USER, RoleEnum.ADMIN];
+ *
+ * updatedAt: Date;
+ *
+ * createdAt: Date;
  */
 @Entity()
 export class UsersModel {
@@ -45,4 +56,10 @@ export class UsersModel {
 
   @OneToMany(() => PostsModel, (post) => post.author)
   posts: PostModel[];
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @CreateDateColumn()
+  createdAt: Date;
 }
