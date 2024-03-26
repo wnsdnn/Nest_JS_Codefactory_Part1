@@ -1,10 +1,14 @@
-import { Body, Controller, Header, Headers, Post } from '@nestjs/common';
-import { AuthService } from './auth.service';
 import {
-  MaxLengthPipe,
-  MinLengthPipe,
-  PasswordPipe,
-} from './pipe/password.pipe';
+  Body,
+  Controller,
+  Headers,
+  Post,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
+import { AuthService } from './auth.service';
+import { MaxLengthPipe, MinLengthPipe } from './pipe/password.pipe';
+import { BasicTokenGuard } from './guard/basic-token.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -37,7 +41,12 @@ export class AuthController {
   }
 
   @Post('login/email')
-  async postLoginEmail(@Headers('authorization') rawToken: string) {
+  @UseGuards(BasicTokenGuard)
+  async postLoginEmail(
+    @Headers('authorization') rawToken: string,
+    // 요청의 Request 가져오기
+    @Request() req,
+  ) {
     // email:password 된것이 base64로 인코딩되어있다.
     const token = this.authService.extractTokenFromHeader(rawToken, false);
 
