@@ -1,13 +1,18 @@
 import {
   Body,
-  Controller, DefaultValuePipe,
+  Controller,
   Delete,
   Get,
-  Param, ParseIntPipe,
+  Param,
+  ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
+import { AccessTokenGuard } from '../auth/guard/bearer-token.guard';
+import { request } from 'express';
 
 @Controller('posts')
 export class PostsController {
@@ -39,13 +44,19 @@ export class PostsController {
   // 3) POST /posts
   // POST를 생성한다.
   @Post()
+  // AccessToken값이 존재하는지 확인
+  @UseGuards(AccessTokenGuard)
   postPost(
-    @Body('authorId') authorId: number,
+    // AccessTokenGuard를 사용해서 request에 user 데이터를 저장.
+    @Request() req: any,
     @Body('title') title: string,
     @Body('content') content: string,
     // isPublic 값을 보내주지 않는다면 기본값을 true로 설정
     // @Body('isPublic', new DefaultValuePipe(true)) isPublic: boolean,
   ) {
+    // request의 user 데이터를 가져와서 글 저장 API에 적용
+    const authorId = req.user.id;
+
     return this.postsService.createPost(authorId, title, content);
   }
 
