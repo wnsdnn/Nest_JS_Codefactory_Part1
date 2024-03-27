@@ -13,6 +13,8 @@ import {
 import { PostsService } from './posts.service';
 import { AccessTokenGuard } from '../auth/guard/bearer-token.guard';
 import { request } from 'express';
+import { User } from '../users/decorator/user.decorator';
+import { UsersModel } from '../users/entities/users.entity';
 
 @Controller('posts')
 export class PostsController {
@@ -48,14 +50,16 @@ export class PostsController {
   @UseGuards(AccessTokenGuard)
   postPost(
     // AccessTokenGuard를 사용해서 request에 user 데이터를 저장.
-    @Request() req: any,
+    // @Request() req: any,
+    // User Decorator 사용 (AccessTokenGuard가 통과되었을때만 사용가능)
+    @User() user: UsersModel,
     @Body('title') title: string,
     @Body('content') content: string,
     // isPublic 값을 보내주지 않는다면 기본값을 true로 설정
     // @Body('isPublic', new DefaultValuePipe(true)) isPublic: boolean,
   ) {
     // request의 user 데이터를 가져와서 글 저장 API에 적용
-    const authorId = req.user.id;
+    const authorId = user.id;
 
     return this.postsService.createPost(authorId, title, content);
   }
