@@ -15,6 +15,7 @@ import { AccessTokenGuard } from '../auth/guard/bearer-token.guard';
 import { request } from 'express';
 import { User } from '../users/decorator/user.decorator';
 import { UsersModel } from '../users/entities/users.entity';
+import { CreatePostDto } from './dto/create-post.dto';
 
 @Controller('posts')
 export class PostsController {
@@ -45,6 +46,8 @@ export class PostsController {
 
   // 3) POST /posts
   // POST를 생성한다.
+  //
+  // DTO - Data Trasfer Object
   @Post()
   // AccessToken값이 존재하는지 확인
   @UseGuards(AccessTokenGuard)
@@ -54,15 +57,16 @@ export class PostsController {
     // User Decorator 사용 (AccessTokenGuard가 통과되었을때만 사용가능)
     // @User() user: UsersModel,
     @User('id', ParseIntPipe) userId: number,
-    @Body('title') title: string,
-    @Body('content') content: string,
+    @Body() body: CreatePostDto,
+    // @Body('title') title: string,
+    // @Body('content') content: string,
     // isPublic 값을 보내주지 않는다면 기본값을 true로 설정
     // @Body('isPublic', new DefaultValuePipe(true)) isPublic: boolean,
   ) {
     // request의 user 데이터를 가져와서 글 저장 API에 적용
     // const authorId = user.id;
 
-    return this.postsService.createPost(userId, title, content);
+    return this.postsService.createPost(userId, body);
   }
 
   // 4) PATCH /posts/:id

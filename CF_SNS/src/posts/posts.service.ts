@@ -6,6 +6,7 @@ import {
 import { Repository } from 'typeorm';
 import { PostsModel } from './entities/posts.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CreatePostDto } from './dto/create-post.dto';
 
 /**
  * author: string;
@@ -53,22 +54,17 @@ export class PostsService {
     return post;
   }
 
-  async createPost(authorId: number, title: string, content: string) {
+  async createPost(authorId: number, postDto: CreatePostDto) {
     // 기억해야할 메소드 2개
     // 1) create -> 저장할 객체를 생성한다.
     // 2) save -> 객체를 저장한다. (create 메서드에서 생성한 객체로)
-    if (!authorId || !title || !content) {
-      throw new BadRequestException();
-    }
-
     const post = this.postsRepository.create({
       // 이미 시스템은 author가 UsersModel값인지 알기 때문에
       // {}을 선언해서 id(primary) 값만 보내줘도 된다.
       author: {
         id: authorId,
       },
-      title,
-      content,
+      ...postDto,
       likeCount: 0,
       commentCount: 0,
     });
