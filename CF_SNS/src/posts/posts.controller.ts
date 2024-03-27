@@ -52,16 +52,17 @@ export class PostsController {
     // AccessTokenGuard를 사용해서 request에 user 데이터를 저장.
     // @Request() req: any,
     // User Decorator 사용 (AccessTokenGuard가 통과되었을때만 사용가능)
-    @User() user: UsersModel,
+    // @User() user: UsersModel,
+    @User('id', ParseIntPipe) userId: number,
     @Body('title') title: string,
     @Body('content') content: string,
     // isPublic 값을 보내주지 않는다면 기본값을 true로 설정
     // @Body('isPublic', new DefaultValuePipe(true)) isPublic: boolean,
   ) {
     // request의 user 데이터를 가져와서 글 저장 API에 적용
-    const authorId = user.id;
+    // const authorId = user.id;
 
-    return this.postsService.createPost(authorId, title, content);
+    return this.postsService.createPost(userId, title, content);
   }
 
   // 4) PATCH /posts/:id
