@@ -7,7 +7,7 @@ import { IsEmail, IsString, Length } from 'class-validator';
 import { lengthValidationMessage } from '../../common/validation-message/length-validation.message';
 import { stringValidationMessage } from '../../common/validation-message/string-validation.message';
 import { emailValidationMessage } from '../../common/validation-message/email-validation.message';
-import { Exclude } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 
 /**
  * id: number;
@@ -42,6 +42,13 @@ export class UsersModel extends BaseModel {
     message: lengthValidationMessage,
   })
   nickname: string;
+
+  // @Exclude()의 반대 개념
+  // 실재 존재하지 않는 값을 조회에 포함시킬수 있음
+  @Expose()
+  get nicknameAndEmail() {
+    return this.nickname + '/' + this.email;
+  }
 
   // 1) 유일무이한 값이 될 것
   @Column({
