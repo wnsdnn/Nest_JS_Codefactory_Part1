@@ -25,6 +25,8 @@ import { Exclude, Expose } from 'class-transformer';
  * createdAt: Date;
  */
 @Entity()
+// entity를 @Exclude() 설정을 해두고 보여줄 파라미터만 @Expose() 해줄수도 있음
+// @Exclude()
 export class UsersModel extends BaseModel {
   // @PrimaryGeneratedColumn()
   // id: number;
@@ -41,14 +43,15 @@ export class UsersModel extends BaseModel {
   @Length(1, 20, {
     message: lengthValidationMessage,
   })
+  // @Expose()
   nickname: string;
 
   // @Exclude()의 반대 개념
   // 실재 존재하지 않는 값을 조회에 포함시킬수 있음
-  @Expose()
-  get nicknameAndEmail() {
-    return this.nickname + '/' + this.email;
-  }
+  // @Expose()
+  // get nicknameAndEmail() {
+  //   return this.nickname + '/' + this.email;
+  // }
 
   // 1) 유일무이한 값이 될 것
   @Column({
@@ -63,6 +66,7 @@ export class UsersModel extends BaseModel {
       message: emailValidationMessage,
     },
   )
+  // @Expose()
   email: string;
 
   @Column()
