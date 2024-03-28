@@ -21,7 +21,7 @@ export class UsersController {
   @Get()
   // users.entity에 @Exclude() 선언된 프로퍼티들 조회에서 제외
   // 데이터를 직렬화 할때 무언가를 보이거나 안보이게 할수 있다.
-  @UseInterceptors(ClassSerializerInterceptor)
+  // @UseInterceptors(ClassSerializerInterceptor)
   /**
    * serialization -> 직렬화 -> 현재 시스템에서 사용되는 (NestJS) 데이터의 구조를
    *     다른 시스템에서도 쉽게 사용 할 수 있는 포맷으로 변환
