@@ -4,6 +4,9 @@ import { PostModel } from '../../posts/posts.service';
 import { PostsModel } from '../../posts/entities/posts.entity';
 import { BaseModel } from '../../common/entity/base.entity';
 import { IsEmail, IsString, Length } from 'class-validator';
+import { lengthValidationMessage } from '../../common/validation-message/length-validation.message';
+import { stringValidationMessage } from '../../common/validation-message/string-validation.message';
+import { emailValidationMessage } from '../../common/validation-message/email-validation.message';
 
 /**
  * id: number;
@@ -31,9 +34,11 @@ export class UsersModel extends BaseModel {
     // length: 20,
     unique: true,
   })
-  @IsString()
+  @IsString({
+    message: stringValidationMessage,
+  })
   @Length(1, 20, {
-    message: '닉네임은 1~20자 사이로 입력해주세요.',
+    message: lengthValidationMessage,
   })
   nickname: string;
 
@@ -41,14 +46,23 @@ export class UsersModel extends BaseModel {
   @Column({
     unique: true,
   })
-  @IsString()
-  @IsEmail()
+  @IsString({
+    message: stringValidationMessage,
+  })
+  @IsEmail(
+    {},
+    {
+      message: emailValidationMessage,
+    },
+  )
   email: string;
 
   @Column()
-  @IsString()
+  @IsString({
+    message: stringValidationMessage,
+  })
   @Length(3, 8, {
-    message: '비밀번호는 3~8자 사이로 입력해주세요.',
+    message: lengthValidationMessage,
   })
   password: string;
 
