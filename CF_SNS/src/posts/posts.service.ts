@@ -39,6 +39,10 @@ export class PostsService {
     });
   }
 
+  paginatePosts() {
+
+  }
+
   async getPostById(id: number) {
     // Repository로 받는 모든 값들은 비동기이기 때문에 async 사용
     const post = await this.postsRepository.findOne({
