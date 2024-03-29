@@ -8,7 +8,12 @@ async function bootstrap() {
   // PostsModule > AppModule > main.ts
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      // dto의 default값들을 넣은채로 인스턴스를 생성해도 괜찮다는 Emt
+      transform: true,
+    }),
+  );
 
   await app.listen(3000);
 }
