@@ -51,7 +51,7 @@ export class PostsService {
     const posts = await this.postsRepository.find({
       where: {
         // 더 크다 / 더 많다
-        id: MoreThan(dto.where__id_less_more_than ?? 0),
+        id: MoreThan(dto.where__id_more_than ?? 0),
       },
       // order__createAt
       order: {
