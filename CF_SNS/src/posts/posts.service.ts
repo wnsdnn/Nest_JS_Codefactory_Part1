@@ -7,6 +7,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { PaginatePostDto } from './dto/paginate-post-dto';
 import { HOST, PROTOCOL } from '../common/const/env.const';
 import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere';
+import { retry } from 'rxjs';
 
 /**
  * author: string;
@@ -57,7 +58,24 @@ export class PostsService {
   }
 
   async pagePaginatePosts(dto: PaginatePostDto) {
+    /**
+     * data: Data[],
+     * total: number,
+     *
+     * [1] [2] [3] [4]
+     */
 
+    const posts = await this.postsRepository.find({
+      skip: dto.take * (dto.page - 1),
+      order: {
+        createdAt: dto.order__createdAt,
+      },
+      take: dto.take,
+    });
+
+    return {
+      data: posts,
+    };
   }
 
   async cursorPaginatePosts(dto: PaginatePostDto) {
