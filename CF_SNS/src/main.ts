@@ -17,7 +17,11 @@ async function bootstrap() {
       transformOptions: {
         // 임의로 변하는걸 허용한다
         enableImplicitConversion: true,
-      }
+      },
+      // Vaildator 데코레이션인 적용되지 않는 속성들을 삭제함
+      whitelist: true,
+      // Vaildator 데코레이션이 적용되지 않은 값을 보낼때 에러를 던진다
+      forbidNonWhitelisted: true,
     }),
   );
 
