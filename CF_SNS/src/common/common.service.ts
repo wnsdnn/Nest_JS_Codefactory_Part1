@@ -2,14 +2,12 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { BasePaginationDto } from './dto/base-pagination.dto';
 import {
   FindManyOptions,
-  FindOptions,
   FindOptionsOrder,
   FindOptionsWhere,
   Repository,
 } from 'typeorm';
 import { BaseModel } from './entity/base.entity';
 import { FILTER_MAPPER } from './const/filter-mapper.const';
-import { filter } from 'rxjs';
 
 @Injectable()
 export class CommonService {
@@ -43,6 +41,7 @@ export class CommonService {
      *
      * where__title__ilike
      */
+    const findOptions = this.composeFindOptions(dto);
   }
 
   private composeFindOptions<T extends BaseModel>(
@@ -94,7 +93,7 @@ export class CommonService {
       } else if (key.startsWith('order__')) {
         order = {
           ...order,
-          ...this.parseOrderFileter(key, value),
+          ...this.parseWhereFileter(key, value),
         };
       }
     }
@@ -110,7 +109,7 @@ export class CommonService {
   private parseWhereFileter<T extends BaseModel>(
     key: string,
     value: any,
-  ): FindOptionsWhere<T> {
+  ): FindOptionsWhere<T> | FindOptionsOrder<T> {
     const options: FindOptionsWhere<T> = {};
 
     /**
@@ -181,9 +180,4 @@ export class CommonService {
 
     return options;
   }
-
-  private parseOrderFileter<T extends BaseModel>(
-    key: string,
-    value: any,
-  ): FindOptionsOrder<T> {}
 }
