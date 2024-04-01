@@ -1,7 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { BasePaginationDto } from './dto/base-pagination.dto';
-import { FindManyOptions, FindOptions, FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
+import {
+  FindManyOptions,
+  FindOptions,
+  FindOptionsOrder,
+  FindOptionsWhere,
+  Repository,
+} from 'typeorm';
 import { BaseModel } from './entity/base.entity';
+import { FILTER_MAPPER } from './const/filter-mapper.const';
+import { filter } from 'rxjs';
 
 @Injectable()
 export class CommonService {
@@ -99,11 +107,83 @@ export class CommonService {
     };
   }
 
-  private parseWhereFileter<T extends BaseModel>(key: string, value: any): FindOptionsWhere<T> {
+  private parseWhereFileter<T extends BaseModel>(
+    key: string,
+    value: any,
+  ): FindOptionsWhere<T> {
+    const options: FindOptionsWhere<T> = {};
 
+    /**
+     * 예를들어 where__id__more_than
+     * __를 기준으로 나눴을때
+     *
+     * ['where', 'id', 'more_than']으로 나눌 수 있다.
+     */
+    const split = key.split('__');
+
+    if (split.length !== 2 && split.length !== 3) {
+      throw new BadRequestException(
+        `where 필터는 '__'로 split 했을때 길이가 2 또는 3이어야 합니다 - 문재되는 키값 ${key}`,
+      );
+    }
+
+    /**
+     * 길이가 2일경우는
+     * where__id = 3
+     *
+     * FindOptionsWhere로 풀어보면
+     * 아래와 같다
+     *
+     * {
+     *   where: {
+     *     id: 3,
+     *   }
+     * }
+     */
+    if (split.length === 2) {
+      const [_, field] = split;
+
+      /**
+       * field -> id
+       * value -> 3
+       */
+      options[field] = value;
+    } else {
+      /**
+       * 길이가 3일 경우에는 Typeorm 유틸리티 적용이 필요한 경우다.
+       *
+       * where__id__more_than의 경우
+       * where는 버려도 되고 두번째 값은 필터할 키값이 되고
+       * 세벤째 값은 typeorm 유틸리티가 된다.
+       *
+       * FILTER_MAPPER에 미리 정의해둔 값들로
+       * field 값에 FILTER_MAPPER에서 해당되는 utility를 가져온 후
+       * 값에 적용해준다.
+       */
+      // ['where', 'id', 'more_than']
+      const [_, field, operator] = split;
+
+      // // where__id__between = 3,4
+      // // 만약에 split 대상 문자가 존재하지 않으면 길이가 무조건 1이다.
+      // const values = value.toString().split(',');
+      //
+      // // field -> id
+      // // operator -> more_than
+      // // FILTER_MAPPER[operator] -> MoreThan
+      // if (operator === 'between') {
+      //   options[field] = FILTER_MAPPER[operator](values[0], values[1]);
+      // } else {
+      //   options[field] = FILTER_MAPPER[operator](value);
+      // }
+
+      options[field] = FILTER_MAPPER[operator](value);
+    }
+
+    return options;
   }
 
-  private parseOrderFileter<T extends BaseModel>(key: string, value: any): FindOptionsOrder<T> {
-
-  }
+  private parseOrderFileter<T extends BaseModel>(
+    key: string,
+    value: any,
+  ): FindOptionsOrder<T> {}
 }
