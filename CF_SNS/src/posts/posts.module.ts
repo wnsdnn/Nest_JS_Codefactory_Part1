@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostsModel } from './entities/posts.entity';
 import { AuthModule } from '../auth/auth.module';
 import { UsersModule } from '../users/users.module';
+import { CommonModule } from '../common/common.module';
 
 // 여기 선언하면 IocContainer가 인지할수 있음
 @Module({
@@ -14,6 +15,7 @@ import { UsersModule } from '../users/users.module';
     TypeOrmModule.forFeature([PostsModel]),
     AuthModule,
     UsersModule,
+    CommonModule,
   ],
   exports: [PostsService],
   // controllers에 PostsController를 주입해주었기 때문에
