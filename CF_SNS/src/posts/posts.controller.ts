@@ -66,11 +66,10 @@ export class PostsController {
   postPost(
     @User('id', ParseIntPipe) userId: number,
     @Body() body: CreatePostDto,
-    @UploadedFile() file?: Express.Multer.File,
     // @Body('title') title: string,
     // @Body('content') content: string,
   ) {
-    return this.postsService.createPost(userId, body, file?.filename);
+    return this.postsService.createPost(userId, body);
   }
 
   // 4) PATCH /posts/:id
