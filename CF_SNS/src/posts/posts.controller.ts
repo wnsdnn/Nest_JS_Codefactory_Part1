@@ -59,6 +59,21 @@ export class PostsController {
   // POST를 생성한다.
   //
   // DTO - Data Trasfer Object
+  //
+  // Transaction (트랜젝션)
+  //
+  // A Model ,B Model
+  // Post API -> A 모델을 저장하고, B 모델을 저장한다.
+  // await repository.save(a);
+  // await repository.save(b);
+  //
+  // 만약 a를 저장하다가 실패하면 b를 저장하면 안될뎡우
+  // all or nothing 이라고 함 (모두가 실행되거나 아무것도 실행이 안되거나)
+  //
+  // transaction
+  // start -> 시작
+  // commit(성공했을때) -> 저장 (쌓아뒀다가 한번에 저장)
+  // rollback -> 원상복구 (오류나면 rollback 실행)
   @Post()
   // AccessToken값이 존재하는지 확인
   @UseGuards(AccessTokenGuard)
