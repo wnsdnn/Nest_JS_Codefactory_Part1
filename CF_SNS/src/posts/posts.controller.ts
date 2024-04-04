@@ -63,12 +63,14 @@ export class PostsController {
   // AccessToken값이 존재하는지 확인
   @UseGuards(AccessTokenGuard)
   @UseInterceptors(FileInterceptor('image'))
-  postPost(
+  async postPost(
     @User('id', ParseIntPipe) userId: number,
     @Body() body: CreatePostDto,
     // @Body('title') title: string,
     // @Body('content') content: string,
   ) {
+    await this.postsService.createPostImage(body);
+
     return this.postsService.createPost(userId, body);
   }
 
