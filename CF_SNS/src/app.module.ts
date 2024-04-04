@@ -20,6 +20,7 @@ import {
 } from './common/const/env-keys.const';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { PUBLIC_FOLDER_PATH } from './common/const/path.const';
+import { ImageModel } from './common/entity/iamge.entity';
 
 @Module({
   // imports - 다른 모듈을 불러올때 사용
@@ -28,8 +29,6 @@ import { PUBLIC_FOLDER_PATH } from './common/const/path.const';
     UsersModule,
     // 외부에서 파일 접근 가능하게 만들기
     ServeStaticModule.forRoot({
-      // 4022.jpg
-      //
       // http://localhost:3000/public/posts/4003.jpg
       // http://localhost:3000/posts/4003.jpg
       rootPath: PUBLIC_FOLDER_PATH,
@@ -53,7 +52,7 @@ import { PUBLIC_FOLDER_PATH } from './common/const/path.const';
       password: process.env[ENV_DB_PASSWORD_KEY],
       database: process.env[ENV_DB_DATABASE_KEY],
       // entity를 등록
-      entities: [PostsModel, UsersModel],
+      entities: [PostsModel, UsersModel, ImageModel],
       synchronize: true,
     }),
     AuthModule,
