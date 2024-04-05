@@ -2,7 +2,8 @@ import {
   Body,
   Controller,
   Delete,
-  Get, InternalServerErrorException,
+  Get,
+  InternalServerErrorException,
   Param,
   ParseIntPipe,
   Patch,
@@ -21,6 +22,7 @@ import { UsersModel } from '../users/entities/users.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImageModelType } from '../common/entity/iamge.entity';
 import { DataSource } from 'typeorm';
+import { PostsImagesService } from './image/images.service';
 
 @Controller('posts')
 export class PostsController {
@@ -32,6 +34,7 @@ export class PostsController {
     private readonly postsService: PostsService,
     // DataSource - nest에서 기본제공
     private readonly dataSource: DataSource,
+    private readonly postsImagesService: PostsImagesService,
   ) {}
 
   // 1) GET / posts
@@ -64,20 +67,10 @@ export class PostsController {
 
   // 3) POST /posts
   // POST를 생성한다.
-  //
   // DTO - Data Trasfer Object
   //
   // Transaction (트랜젝션)
-  //
-  // A Model ,B Model
-  // Post API -> A 모델을 저장하고, B 모델을 저장한다.
-  // await repository.save(a);
-  // await repository.save(b);
-  //
-  // 만약 a를 저장하다가 실패하면 b를 저장하면 안될뎡우
   // all or nothing 이라고 함 (모두가 실행되거나 아무것도 실행이 안되거나)
-  //
-  // transaction
   // start -> 시작
   // commit(성공했을때) -> 저장 (쌓아뒀다가 한번에 저장)
   // rollback -> 원상복구 (오류나면 rollback 실행)
@@ -104,17 +97,18 @@ export class PostsController {
 
     // 로직 실행
     try {
-      const post = await this.postsService.createPost(userId, body);
-
-      throw new InternalServerErrorException('에러가 발생하였습니다.');
+      const post = await this.postsService.createPost(userId, body, qr);
 
       for (let i = 0; i < body.images.length; i++) {
-        await this.postsService.createPostImage({
-          post,
-          order: i,
-          path: body.images[i],
-          type: ImageModelType.POST_IMAGE,
-        });
+        await this.postsImagesService.createPostImage(
+          {
+            post,
+            order: i,
+            path: body.images[i],
+            type: ImageModelType.POST_IMAGE,
+          },
+          qr,
+        );
       }
 
       // 쿼리 러너 커밋
@@ -127,6 +121,8 @@ export class PostsController {
       // 트랜젹션을 종료하고 원래 상태로 되돌린다.
       await qr.rollbackTransaction();
       await qr.release();
+
+      throw new InternalServerErrorException(`에러가 났습니다: ${e}`);
     }
   }
 
