@@ -3,7 +3,13 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { FindOptionsWhere, LessThan, MoreThan, Repository } from 'typeorm';
+import {
+  FindOptionsWhere,
+  LessThan,
+  MoreThan,
+  QueryRunner,
+  Repository,
+} from 'typeorm';
 import { PostsModel } from './entities/posts.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -219,11 +225,23 @@ export class PostsService {
     return result;
   }
 
-  async createPost(authorId: number, postDto: CreatePostDto) {
+  // 쿼리 러너 사용시 쿼리 러너에서 Repository를
+  // 받을수 있도록 Repository를 반환하는 함수
+  //
+  // 만약 쿼리 러너가 없으면 그냥 일반 Repository 반환
+  getRepository(qr?: QueryRunner) {
+    return qr
+      ? qr.manager.getRepository<PostsModel>(PostsModel)
+      : this.postsRepository;
+  }
+
+  async createPost(authorId: number, postDto: CreatePostDto, qr?: QueryRunner) {
     // 기억해야할 메소드 2개
     // 1) create -> 저장할 객체를 생성한다.
     // 2) save -> 객체를 저장한다. (create 메서드에서 생성한 객체로)
-    const post = this.postsRepository.create({
+    const repository = this.getRepository(qr);
+
+    const post = repository.create({
       // 이미 시스템은 author가 UsersModel값인지 알기 때문에
       // {}을 선언해서 id(primary) 값만 보내줘도 된다.
       author: {
@@ -235,7 +253,7 @@ export class PostsService {
       commentCount: 0,
     });
 
-    const newPost = await this.postsRepository.save(post);
+    const newPost = await repository.save(post);
 
     return newPost;
   }
