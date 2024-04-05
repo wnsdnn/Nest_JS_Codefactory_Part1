@@ -6,13 +6,14 @@ import { PostsModel } from './entities/posts.entity';
 import { AuthModule } from '../auth/auth.module';
 import { UsersModule } from '../users/users.module';
 import { CommonModule } from '../common/common.module';
+import { ImageModel } from '../common/entity/iamge.entity';
 
 // 여기 선언하면 IocContainer가 인지할수 있음
 @Module({
   imports: [
     // Repository를 만들때는 forFeature() 사용
     // TypeOrm이 자동으로 Repository를 생성해준다.
-    TypeOrmModule.forFeature([PostsModel]),
+    TypeOrmModule.forFeature([PostsModel, ImageModel,]),
     AuthModule,
     UsersModule,
     CommonModule,

@@ -13,27 +13,11 @@ import { CommonService } from '../common/common.service';
 import { ConfigService } from '@nestjs/config';
 import { ENV_HOST_KEY, ENV_PROTOCOL_KEY } from '../common/const/env-keys.const';
 import * as path from 'path';
-import {
-  POST_IMAGE_PATH,
-  PUBLIC_FOLDER_PATH, TEMP_FOLDER_PATH,
-} from '../common/const/path.const';
+import { POST_IMAGE_PATH, TEMP_FOLDER_PATH } from '../common/const/path.const';
 import { promises } from 'fs';
-
-/**
- * author: string;
- * title: string;
- * content: string;
- * likeCount: number;
- * commentCount: number;
- */
-export interface PostModel {
-  id: number;
-  author: string;
-  title: string;
-  content: string;
-  likeCount: number;
-  commentCount: number;
-}
+import { CreatePostImageDto } from './image/dto/create-image.dto';
+import { ImageModel } from '../common/entity/iamge.entity';
+import { DEFAULT_POST_FIND_OPTIONS } from './const/default-post-find-options.const';
 
 @Injectable()
 // @Injectable을 써줘야지 Provider에서 사용할수 있음.
@@ -41,13 +25,15 @@ export class PostsService {
   constructor(
     @InjectRepository(PostsModel)
     private readonly postsRepository: Repository<PostsModel>,
+    @InjectRepository(ImageModel)
+    private readonly imageRepository: Repository<ImageModel>,
     private readonly commonService: CommonService,
     private readonly configService: ConfigService,
   ) {}
 
   async getAllPosts() {
     return this.postsRepository.find({
-      relations: ['author'],
+      ...DEFAULT_POST_FIND_OPTIONS,
     });
   }
 
@@ -56,6 +42,7 @@ export class PostsService {
       await this.createPost(userId, {
         title: `임의로 생성된 포스트 제목${i}`,
         content: `임의로 생성된 포스트 내용${i}`,
+        images: [],
       });
     }
   }
@@ -66,7 +53,7 @@ export class PostsService {
       dto,
       this.postsRepository,
       {
-        relations: ['author'],
+        ...DEFAULT_POST_FIND_OPTIONS,
       },
       'posts',
     );
@@ -185,10 +172,10 @@ export class PostsService {
   async getPostById(id: number) {
     // Repository로 받는 모든 값들은 비동기이기 때문에 async 사용
     const post = await this.postsRepository.findOne({
+      ...DEFAULT_POST_FIND_OPTIONS,
       where: {
         id,
       },
-      relations: ['author'],
     });
 
     if (!post) {
@@ -198,10 +185,10 @@ export class PostsService {
     return post;
   }
 
-  async createPostImage(dto: CreatePostDto) {
+  async createPostImage(dto: CreatePostImageDto) {
     // dto의 이미지 이름을 기반으로
     // 파일의 경로를 생성한다.
-    const tempFilePath = path.join(TEMP_FOLDER_PATH, dto.image);
+    const tempFilePath = path.join(TEMP_FOLDER_PATH, dto.path);
 
     try {
       // promises 함수 안에 함수들은 모두 비동기
@@ -220,11 +207,16 @@ export class PostsService {
     // {프로젝트 경로}/public/posts/asdf.jpg
     const newPath = path.join(POST_IMAGE_PATH, fileName);
 
+    // save
+    const result = await this.imageRepository.save({
+      ...dto,
+    });
+
     // 파일 옮기기
     // 첫번째 파라미터의 경로에서 두번째 파라미터의 경로로 옮기기
     await promises.rename(tempFilePath, newPath);
 
-    return true;
+    return result;
   }
 
   async createPost(authorId: number, postDto: CreatePostDto) {
@@ -238,6 +230,7 @@ export class PostsService {
         id: authorId,
       },
       ...postDto,
+      images: [],
       likeCount: 0,
       commentCount: 0,
     });

@@ -2,9 +2,8 @@ import { BaseModel } from './base.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { IsEnum, IsInt, IsOptional, IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { POST_IMAGE_PATH } from '../const/path.const';
+import { POST_PUBLIC_IMAGE_PATH } from '../const/path.const';
 import * as path from 'path';
-import { PostModel } from '../../posts/posts.service';
 import { PostsModel } from '../../posts/entities/posts.entity';
 
 export enum ImageModelType {
@@ -34,7 +33,7 @@ export class ImageModel extends BaseModel {
   // obj - 해당데이터의 인스턴스 값
   @Transform(({ value, obj }) => {
     if (obj.type === ImageModelType.POST_IMAGE) {
-      return path.join(POST_IMAGE_PATH, value);
+      return `/${path.join(POST_PUBLIC_IMAGE_PATH, value)}`;
     } else {
       return value;
     }
@@ -42,5 +41,5 @@ export class ImageModel extends BaseModel {
   path: string;
 
   @ManyToOne((type) => PostsModel, (post) => post.images)
-  post?: PostModel;
+  post?: PostsModel;
 }

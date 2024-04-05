@@ -7,8 +7,9 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Query, UploadedFile,
-  UseGuards, UseInterceptors,
+  Query,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { AccessTokenGuard } from '../auth/guard/bearer-token.guard';
@@ -18,6 +19,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { PaginatePostDto } from './dto/paginate-post-dto';
 import { UsersModel } from '../users/entities/users.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ImageModelType } from '../common/entity/iamge.entity';
 
 @Controller('posts')
 export class PostsController {
@@ -84,9 +86,18 @@ export class PostsController {
     // @Body('title') title: string,
     // @Body('content') content: string,
   ) {
-    await this.postsService.createPostImage(body);
+    const post = await this.postsService.createPost(userId, body);
 
-    return this.postsService.createPost(userId, body);
+    for (let i = 0; i < body.images.length; i++) {
+      await this.postsService.createPostImage({
+        post,
+        order: i,
+        path: body.images[i],
+        type: ImageModelType.POST_IMAGE,
+      });
+    }
+
+    return this.postsService.getPostById(post.id);
   }
 
   // 4) PATCH /posts/:id

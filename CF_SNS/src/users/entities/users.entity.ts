@@ -1,13 +1,12 @@
 import { Column, Entity, OneToMany } from 'typeorm';
 import { RolesEnum } from './const/foles.const';
-import { PostModel } from '../../posts/posts.service';
 import { PostsModel } from '../../posts/entities/posts.entity';
 import { BaseModel } from '../../common/entity/base.entity';
 import { IsEmail, IsString, Length } from 'class-validator';
 import { lengthValidationMessage } from '../../common/validation-message/length-validation.message';
 import { stringValidationMessage } from '../../common/validation-message/string-validation.message';
 import { emailValidationMessage } from '../../common/validation-message/email-validation.message';
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude } from 'class-transformer';
 
 /**
  * id: number;
@@ -101,5 +100,5 @@ export class UsersModel extends BaseModel {
   role: RolesEnum;
 
   @OneToMany(() => PostsModel, (post) => post.author)
-  posts: PostModel[];
+  posts: PostsModel[];
 }
