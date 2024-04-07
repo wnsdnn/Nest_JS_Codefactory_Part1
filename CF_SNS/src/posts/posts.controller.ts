@@ -97,7 +97,7 @@ export class PostsController {
     // 트랜젹션 안에서 데이터베이스 액션을 실행 할 수 있다.
     await qr.startTransaction();
 
-    // 로직 실행
+    // 로직 실행  
     try {
       const post = await this.postsService.createPost(userId, body, qr);
 
