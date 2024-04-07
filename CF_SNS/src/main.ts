@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { HttpExceptionFilter } from './common/exception-filter/http.exception-filter';
 
 // nestJS를 실행하는 함수
 async function bootstrap() {
@@ -24,6 +25,9 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
+
+  // ExceptionFilter 글로벌 설정
+  // app.useGlobalFilters(new HttpExceptionFilter());
 
   await app.listen(3000);
 }

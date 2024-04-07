@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -7,7 +8,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Query,
+  Query, UseFilters,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -25,6 +26,7 @@ import { PostsImagesService } from './image/images.service';
 import { LogInterceptor } from '../common/interceptor/log.interceptor';
 import { TransactionInterceptor } from '../common/interceptor/transaction.interceptor';
 import { QueryRunnerDecorator } from '../common/decorator/query-runnder.decorator';
+import { HttpExceptionFilter } from '../common/exception-filter/http.exception-filter';
 
 @Controller('posts')
 export class PostsController {
