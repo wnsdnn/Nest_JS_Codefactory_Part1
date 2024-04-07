@@ -170,9 +170,11 @@ export class PostsService {
     };
   }
 
-  async getPostById(id: number) {
+  async getPostById(id: number, qr?: QueryRunner) {
+    const repository = this.getRepository(qr);
+
     // Repository로 받는 모든 값들은 비동기이기 때문에 async 사용
-    const post = await this.postsRepository.findOne({
+    const post = await repository.findOne({
       ...DEFAULT_POST_FIND_OPTIONS,
       where: {
         id,
