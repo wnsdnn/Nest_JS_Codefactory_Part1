@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { PostsController } from './posts.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -8,6 +8,7 @@ import { UsersModule } from '../users/users.module';
 import { CommonModule } from '../common/common.module';
 import { ImageModel } from '../common/entity/iamge.entity';
 import { PostsImagesService } from './image/images.service';
+import { LogMiddleware } from '../common/middleware/log.middleware';
 
 // 여기 선언하면 IocContainer가 인지할수 있음
 @Module({
