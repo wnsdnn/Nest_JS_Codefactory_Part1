@@ -1,4 +1,5 @@
 import {
+  ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
   SubscribeMessage,
@@ -20,9 +21,32 @@ export class ChatsGateway implements OnGatewayConnection {
     console.log(`on connect called :  ${socket.id}`);
   }
 
+  @SubscribeMessage('enter_chat')
+  enterChat(
+    // 방의 chat ID들을 리스트로 받는다.
+    @MessageBody() data: number[],
+    @ConnectedSocket() socket: Socket,
+  ) {
+    for (const chatId of data) {
+      // socket.join()
+      socket.join(chatId.toString());
+    }
+  }
+
   // socket.on('send_message', () => {  });
   @SubscribeMessage('send_message')
-  sendMessage(@MessageBody() data: string) {
-    this.server.emit('receive_message', 'hello from server');
+  sendMessage(
+    @MessageBody()
+    messageBody: {
+      message: string;
+      chatId: number;
+    },
+    @ConnectedSocket() socket: Socket,
+  ) {
+    const { message, chatId } = JSON.parse(messageBody.toString());
+
+    this.server
+      .in(chatId.toString())
+      .emit('receive_message', message.toString());
   }
 }
