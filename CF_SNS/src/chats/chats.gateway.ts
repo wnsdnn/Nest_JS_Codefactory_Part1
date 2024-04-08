@@ -45,8 +45,11 @@ export class ChatsGateway implements OnGatewayConnection {
   ) {
     const { message, chatId } = JSON.parse(messageBody.toString());
 
-    this.server
-      .in(chatId.toString())
-      .emit('receive_message', message.toString());
+    // Broadcasting(브로드캐스팅) - 이방에서 현재 소켓(나)만 빼고 메시지를 보내는 기능
+    // socket - 현재 소켓의 상태는 나를 제외한 상태
+    socket.to(chatId.toString()).emit('receive_message', message.toString());
+    // this.server
+    //   .in(chatId.toString())
+    //   .emit('receive_message', message.toString());
   }
 }
