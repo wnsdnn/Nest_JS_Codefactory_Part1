@@ -19,7 +19,7 @@ export class CommonService {
     dto: BasePaginationDto,
     repository: Repository<T>,
     overrideFindOptions: FindManyOptions<T> = {},
-    path: string,
+    path?: string,
   ) {
     if (dto.page) {
       return this.pagePaginate<T>(dto, repository, overrideFindOptions);
