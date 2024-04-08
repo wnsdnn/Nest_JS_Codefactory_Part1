@@ -7,18 +7,32 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { CreateChatDto } from './dto/create-chat.dto';
+import { ChatsService } from './chats.service';
 
 @WebSocketGateway({
   // ws://localhost:3000/chats
   namespace: 'chats',
 })
 export class ChatsGateway implements OnGatewayConnection {
+  constructor(
+    private readonly chatsService: ChatsService,
+  ) {}
+
   // await app.listen(3000); 이 값의 반환값을 server라고 생각하면 됨
   @WebSocketServer()
   server: Server;
 
   handleConnection(socket: Socket) {
     console.log(`on connect called :  ${socket.id}`);
+  }
+
+  @SubscribeMessage('create_chat')
+  async createChat(
+    @MessageBody() dto: CreateChatDto,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    const chat = await this.chatsService.createChat(dto);
   }
 
   @SubscribeMessage('enter_chat')
