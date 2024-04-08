@@ -24,6 +24,7 @@ import { ImageModel } from './common/entity/iamge.entity';
 import { LogMiddleware } from './common/middleware/log.middleware';
 import { ChatsModule } from './chats/chats.module';
 import { ChatsModel } from './chats/entity/chats.entity';
+import { MessagesModel } from './chats/messages/entity/message.entity';
 
 @Module({
   // imports - 다른 모듈을 불러올때 사용
@@ -55,7 +56,7 @@ import { ChatsModel } from './chats/entity/chats.entity';
       password: process.env[ENV_DB_PASSWORD_KEY],
       database: process.env[ENV_DB_DATABASE_KEY],
       // entity를 등록
-      entities: [PostsModel, UsersModel, ImageModel, ChatsModel],
+      entities: [PostsModel, UsersModel, ImageModel, ChatsModel, MessagesModel],
       synchronize: true,
     }),
     AuthModule,
