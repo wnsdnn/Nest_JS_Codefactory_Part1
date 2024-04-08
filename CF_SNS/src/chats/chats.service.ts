@@ -48,4 +48,15 @@ export class ChatsService {
       },
     });
   }
+
+  // 해당 ID에 Chat이 존재하는지 확인
+  async checkIfChatExists(chatId: number) {
+    const exists = await this.chatsRepository.exists({
+      where: {
+        id: chatId,
+      },
+    });
+
+    return exists;
+  }
 }
