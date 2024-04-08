@@ -22,6 +22,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { PUBLIC_FOLDER_PATH } from './common/const/path.const';
 import { ImageModel } from './common/entity/iamge.entity';
 import { LogMiddleware } from './common/middleware/log.middleware';
+import { ChatsModule } from './chats/chats.module';
 
 @Module({
   // imports - 다른 모듈을 불러올때 사용
@@ -58,6 +59,7 @@ import { LogMiddleware } from './common/middleware/log.middleware';
     }),
     AuthModule,
     CommonModule,
+    ChatsModule,
   ],
   controllers: [AppController],
   providers: [
