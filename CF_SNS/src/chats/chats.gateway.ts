@@ -13,7 +13,8 @@ import { ChatsService } from './chats.service';
 import { EnterChatDto } from './dto/enter-chat.dto';
 import { CreateMessagesDto } from './messages/dto/create-messages.dto';
 import { ChatsMessagesService } from './messages/messages.service';
-import { UsePipes, ValidationPipe } from '@nestjs/common';
+import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
+import { SocketCatchHttpExceptionFilter } from '../common/exception-filter/socket-catch-http.exception-filter';
 
 @WebSocketGateway({
   // ws://localhost:3000/chats
@@ -33,6 +34,9 @@ export class ChatsGateway implements OnGatewayConnection {
     console.log(`on connect called :  ${socket.id}`);
   }
 
+  // 소캣부분에서는 왜 그런지는 모르겠는데 컨트롤러단이 아니라면
+  // GlobalPipe가 적용되지 않음 (그래서 그냥 코드에 바로 적용)
+  //
   // 모든 Exception은 HttpException을 extends하고 있지만
   // WsException은 HttpException을 extends하고 있지 않기 때문에
   // 받아오는 과정에서 오류가 나도 WsException이 아니기 때문에 에러가 걸러지지 않음.
@@ -47,6 +51,7 @@ export class ChatsGateway implements OnGatewayConnection {
       forbidNonWhitelisted: true,
     }),
   )
+  @UseFilters(SocketCatchHttpExceptionFilter)
   @SubscribeMessage('create_chat')
   async createChat(
     @MessageBody() dto: CreateChatDto,
