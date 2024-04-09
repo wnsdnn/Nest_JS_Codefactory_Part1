@@ -15,24 +15,14 @@ export class ChatsMessagesService {
   ) {}
 
   async createMessage(dto: CreateMessagesDto) {
-    let chatId = dto.chatId ?? 0;
-    let authorId = dto.authorId ?? 0;
-    let message = dto.message ?? '';
-
-    if (typeof dto === 'string') {
-      chatId = JSON.parse(dto).chatId;
-      authorId = JSON.parse(dto).authorId;
-      message = JSON.parse(dto).message;
-    }
-
     const messageObj = await this.messagesRepository.save({
       chat: {
-        id: chatId,
+        id: dto.chatId,
       },
       author: {
-        id: authorId,
+        id: dto.authorId,
       },
-      message: message,
+      message: dto.message,
     });
 
     return this.messagesRepository.findOne({

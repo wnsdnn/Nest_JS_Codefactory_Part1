@@ -63,16 +63,10 @@ export class ChatsGateway implements OnGatewayConnection {
   @SubscribeMessage('enter_chat')
   async enterChat(
     // 방의 chat ID들을 리스트로 받는다.
-    @MessageBody() data: EnterChatDto,
+    @MessageBody() dto: EnterChatDto,
     @ConnectedSocket() socket: Socket,
   ) {
-    let chatIds = data.chatIds ?? [];
-
-    if (typeof data === 'string') {
-      chatIds = JSON.parse(data).chatIds;
-    }
-
-    for (const chatId of chatIds) {
+    for (const chatId of dto.chatIds) {
       const exists = await this.chatsService.checkIfChatExists(chatId);
 
       if (!exists) {
@@ -83,7 +77,7 @@ export class ChatsGateway implements OnGatewayConnection {
       }
     }
 
-    socket.join(chatIds.map((x) => x.toString()));
+    socket.join(dto.chatIds.map((x) => x.toString()));
   }
 
   // socket.on('send_message', () => {  });
@@ -93,9 +87,7 @@ export class ChatsGateway implements OnGatewayConnection {
     dto: CreateMessagesDto,
     @ConnectedSocket() socket: Socket,
   ) {
-    const { chatId } = JSON.parse(dto.toString());
-
-    const chatExists = await this.chatsService.checkIfChatExists(chatId);
+    const chatExists = await this.chatsService.checkIfChatExists(dto.chatId);
 
     if (!chatExists) {
       throw new WsException(
