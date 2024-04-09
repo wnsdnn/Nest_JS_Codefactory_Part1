@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { HttpExceptionFilter } from './common/exception-filter/http.exception-filter';
 
 // nestJS를 실행하는 함수
 async function bootstrap() {

@@ -13,6 +13,7 @@ import { ChatsService } from './chats.service';
 import { EnterChatDto } from './dto/enter-chat.dto';
 import { CreateMessagesDto } from './messages/dto/create-messages.dto';
 import { ChatsMessagesService } from './messages/messages.service';
+import { UsePipes, ValidationPipe } from '@nestjs/common';
 
 @WebSocketGateway({
   // ws://localhost:3000/chats
@@ -32,6 +33,20 @@ export class ChatsGateway implements OnGatewayConnection {
     console.log(`on connect called :  ${socket.id}`);
   }
 
+  // 모든 Exception은 HttpException을 extends하고 있지만
+  // WsException은 HttpException을 extends하고 있지 않기 때문에
+  // 받아오는 과정에서 오류가 나도 WsException이 아니기 때문에 에러가 걸러지지 않음.
+  // (서버에서 그냥 오류)
+  @UsePipes(
+    new ValidationPipe({
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  )
   @SubscribeMessage('create_chat')
   async createChat(
     @MessageBody() dto: CreateChatDto,
