@@ -53,4 +53,16 @@ export class CommentsService {
 
     return comment;
   }
+
+  async updateComment(id: number, dto: CreateCommentDto) {
+    const comment = await this.getCommentById(id);
+
+    if (dto.comment) {
+      comment.comment = dto.comment;
+    }
+
+    const newComment = await this.commentRepository.save(comment);
+
+    return newComment;
+  }
 }

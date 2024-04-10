@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -39,13 +40,17 @@ export class CommentsController {
    */
 
   @Get()
+  @UseGuards(AccessTokenGuard)
+  @UseInterceptors(TransactionInterceptor)
   getComments(@Query() query: PaginateCommentDto) {
     return this.commentsService.paginateComments(query);
   }
 
-  @Get(':id')
-  getCommnet(@Param('id', ParseIntPipe) id: number) {
-    return this.commentsService.getCommentById(id);
+  @Get(':commentID')
+  @UseGuards(AccessTokenGuard)
+  @UseInterceptors(TransactionInterceptor)
+  getCommnet(@Param('commentID', ParseIntPipe) commentID: number) {
+    return this.commentsService.getCommentById(commentID);
   }
 
   @Post()
@@ -58,5 +63,15 @@ export class CommentsController {
     const comment = await this.commentsService.createComment(userId, body);
 
     return this.commentsService.getCommentById(comment.id);
+  }
+
+  @Patch(':commentID')
+  @UseGuards(AccessTokenGuard)
+  @UseInterceptors(TransactionInterceptor)
+  patchComment(
+    @Param('commentID', ParseIntPipe) commentID: number,
+    @Body() dto: CreateCommentDto,
+  ) {
+    return this.commentsService.updateComment(commentID, dto);
   }
 }
