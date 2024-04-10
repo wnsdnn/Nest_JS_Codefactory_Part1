@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -58,9 +59,14 @@ export class CommentsController {
   @UseInterceptors(TransactionInterceptor)
   async postComments(
     @User('id', ParseIntPipe) userId: number,
+    @Param('postId', ParseIntPipe) postId,
     @Body() body: CreateCommentDto,
   ) {
-    const comment = await this.commentsService.createComment(userId, body);
+    const comment = await this.commentsService.createComment(
+      userId,
+      postId,
+      body,
+    );
 
     return this.commentsService.getCommentById(comment.id);
   }
@@ -73,5 +79,12 @@ export class CommentsController {
     @Body() dto: CreateCommentDto,
   ) {
     return this.commentsService.updateComment(commentID, dto);
+  }
+
+  @Delete(':commentID')
+  @UseGuards(AccessTokenGuard)
+  @UseInterceptors(TransactionInterceptor)
+  deleteComment(@Param('commentID') commentID: number) {
+    return this.commentsService.deleteComment(commentID);
   }
 }

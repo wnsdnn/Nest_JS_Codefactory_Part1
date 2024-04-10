@@ -23,13 +23,17 @@ export class CommentsService {
     );
   }
 
-  async createComment(authorId: number, commentDto: CreateCommentDto) {
+  async createComment(
+    authorId: number,
+    postId: number,
+    commentDto: CreateCommentDto,
+  ) {
     const comment = this.commentRepository.create({
       author: {
         id: authorId,
       },
       post: {
-        id: commentDto.post,
+        id: postId,
       },
       comment: commentDto.comment,
       likeCount: 0,
@@ -64,5 +68,13 @@ export class CommentsService {
     const newComment = await this.commentRepository.save(comment);
 
     return newComment;
+  }
+
+  async deleteComment(id: number) {
+    const comment = await this.getCommentById(id);
+
+    await this.commentRepository.delete(comment);
+
+    return id;
   }
 }
