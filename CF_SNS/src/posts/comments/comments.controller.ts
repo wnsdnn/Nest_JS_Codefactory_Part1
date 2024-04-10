@@ -17,6 +17,7 @@ import { User } from '../../users/decorator/user.decorator';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { TransactionInterceptor } from '../../common/interceptor/transaction.interceptor';
 import { AccessTokenGuard } from '../../auth/guard/bearer-token.guard';
+import { UsersModel } from '../../users/entity/users.entity';
 
 @Controller('posts/:postId/comments')
 export class CommentsController {
@@ -61,17 +62,11 @@ export class CommentsController {
   @UseGuards(AccessTokenGuard)
   @UseInterceptors(TransactionInterceptor)
   async postComments(
-    @User('id', ParseIntPipe) userId: number,
+    @User() user: UsersModel,
     @Param('postId', ParseIntPipe) postId,
     @Body() body: CreateCommentDto,
   ) {
-    const comment = await this.commentsService.createComment(
-      userId,
-      postId,
-      body,
-    );
-
-    return this.commentsService.getCommentById(comment.id);
+    return this.commentsService.createComment(user, postId, body);
   }
 
   @Patch(':commentId')
