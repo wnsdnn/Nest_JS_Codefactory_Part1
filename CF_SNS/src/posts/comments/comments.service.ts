@@ -48,7 +48,7 @@ export class CommentsService {
     });
 
     if (!comment) {
-      throw new NotFoundException();
+      throw new NotFoundException('댓글이 존재하지 않습니다.');
     }
 
     return comment;

@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   ParseIntPipe,
   Post,
   Query,
@@ -37,9 +38,14 @@ export class CommentsController {
    * 6) DELETE(':commentID') 특정 comment 삭제하는 기능
    */
 
-  @Get('')
+  @Get()
   getComments(@Query() query: PaginateCommentDto) {
     return this.commentsService.paginateComments(query);
+  }
+
+  @Get(':id')
+  getCommnet(@Param('id', ParseIntPipe) id: number) {
+    return this.commentsService.getCommentById(id);
   }
 
   @Post()
