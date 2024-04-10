@@ -2,6 +2,8 @@ import {
   ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
+  OnGatewayDisconnect,
+  OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -29,7 +31,9 @@ import { AuthService } from '../auth/auth.service';
   // ws://localhost:3000/chats
   namespace: 'chats',
 })
-export class ChatsGateway implements OnGatewayConnection {
+export class ChatsGateway
+  implements OnGatewayConnection, OnGatewayInit, OnGatewayDisconnect
+{
   constructor(
     private readonly chatsService: ChatsService,
     private readonly messageService: ChatsMessagesService,
@@ -76,6 +80,17 @@ export class ChatsGateway implements OnGatewayConnection {
     } catch (e) {
       socket.disconnect();
     }
+  }
+
+  // gateway가 시작됬을때 함수를 실행하거나 로직을 실행하고 싶을때 사용
+  // server값은 @WebSocketServer()의 server값이랑 완전히 똑같음
+  afterInit(server: any): any {
+    console.log(`after gateway init`);
+  }
+
+  // 연결이 끊켰을때 실행
+  handleDisconnect(socket: Socket) {
+    console.log(`on disconnet called : ${socket.id}`);
   }
 
   // 소캣부분에서는 왜 그런지는 모르겠는데 컨트롤러단이 아니라면
