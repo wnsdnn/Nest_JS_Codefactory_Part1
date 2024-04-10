@@ -33,10 +33,10 @@ export class CommentsController {
      * updatedAt -> 업데이트일자
      *
      * 2) GET() pagination
-     * 3) GET(':commentID') 특정 comment만 하나 가져오는 기능
+     * 3) GET(':commentId') 특정 comment만 하나 가져오는 기능
      * 4) POST() 코멘트 생성하는 기능
-     * 5) PATCH(':commentID') 특정 comment 업데이트 하는 기능
-     * 6) DELETE(':commentID') 특정 comment 삭제하는 기능
+     * 5) PATCH(':commentId') 특정 comment 업데이트 하는 기능
+     * 6) DELETE(':commentId') 특정 comment 삭제하는 기능
      */
   }
 
@@ -50,11 +50,11 @@ export class CommentsController {
     return this.commentsService.paginateComments(query, postId);
   }
 
-  @Get(':commentID')
+  @Get(':commentId')
   @UseGuards(AccessTokenGuard)
   @UseInterceptors(TransactionInterceptor)
-  getCommnet(@Param('commentID', ParseIntPipe) commentID: number) {
-    return this.commentsService.getCommentById(commentID);
+  getCommnet(@Param('commentId', ParseIntPipe) commentId: number) {
+    return this.commentsService.getCommentById(commentId);
   }
 
   @Post()
@@ -74,20 +74,20 @@ export class CommentsController {
     return this.commentsService.getCommentById(comment.id);
   }
 
-  @Patch(':commentID')
+  @Patch(':commentId')
   @UseGuards(AccessTokenGuard)
   @UseInterceptors(TransactionInterceptor)
   patchComment(
-    @Param('commentID', ParseIntPipe) commentID: number,
+    @Param('commentId', ParseIntPipe) commentId: number,
     @Body() dto: CreateCommentDto,
   ) {
-    return this.commentsService.updateComment(commentID, dto);
+    return this.commentsService.updateComment(commentId, dto);
   }
 
-  @Delete(':commentID')
+  @Delete(':commentId')
   @UseGuards(AccessTokenGuard)
   @UseInterceptors(TransactionInterceptor)
-  deleteComment(@Param('commentID') commentID: number) {
-    return this.commentsService.deleteComment(commentID);
+  deleteComment(@Param('commentId') commentId: number) {
+    return this.commentsService.deleteComment(commentId);
   }
 }

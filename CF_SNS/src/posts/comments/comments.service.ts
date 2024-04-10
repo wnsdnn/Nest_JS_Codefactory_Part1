@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommentsModel } from './entity/comments.entity';
 import { Repository } from 'typeorm';
@@ -58,7 +62,7 @@ export class CommentsService {
     });
 
     if (!comment) {
-      throw new NotFoundException('댓글이 존재하지 않습니다.');
+      throw new BadRequestException(`id: ${id} Comment는 존재하지 않습니다.`);
     }
 
     return comment;
