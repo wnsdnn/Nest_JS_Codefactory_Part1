@@ -111,6 +111,9 @@ export class ChatsGateway implements OnGatewayConnection {
     }),
   )
   @UseFilters(SocketCatchHttpExceptionFilter)
+  // 데이터를 보낼때마다 무언가를 검증해야할때는 Guard를 쓰는것이 맞지만,
+  // Bearer Token을 통해 사용자의 정보를 검증하고 사용자가 맞는지 소캣과 연결하는 것은
+  // 매번 Guard를 적용해주면 안된다.
   @UseGuards(SocketBearerTokenGuard)
   @SubscribeMessage('send_message')
   // socket.on('send_message', () => {  });
