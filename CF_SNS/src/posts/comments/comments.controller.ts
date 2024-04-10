@@ -3,9 +3,7 @@ import { CommentsService } from './comments.service';
 
 @Controller('posts/:postId/comments')
 export class CommentsController {
-  constructor(
-    private readonly commentsService: CommentsService
-  ) {}
+  constructor(private readonly commentsService: CommentsService) {}
 
   /**
    * 1) Entity 생성
