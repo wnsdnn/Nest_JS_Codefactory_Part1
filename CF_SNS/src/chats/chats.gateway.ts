@@ -13,7 +13,12 @@ import { ChatsService } from './chats.service';
 import { EnterChatDto } from './dto/enter-chat.dto';
 import { CreateMessagesDto } from './messages/dto/create-messages.dto';
 import { ChatsMessagesService } from './messages/messages.service';
-import { UseFilters, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+  UseFilters,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { SocketCatchHttpExceptionFilter } from '../common/exception-filter/socket-catch-http.exception-filter';
 import { SocketBearerTokenGuard } from '../auth/guard/socket/socket-bearer-token.guard';
 import { UsersModel } from '../users/entities/users.entity';
@@ -63,6 +68,18 @@ export class ChatsGateway implements OnGatewayConnection {
     const chat = await this.chatsService.createChat(dto);
   }
 
+  @UsePipes(
+    new ValidationPipe({
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  )
+  @UseFilters(SocketCatchHttpExceptionFilter)
+  @UseGuards(SocketBearerTokenGuard)
   @SubscribeMessage('enter_chat')
   async enterChat(
     // 방의 chat ID들을 리스트로 받는다.
@@ -83,12 +100,23 @@ export class ChatsGateway implements OnGatewayConnection {
     socket.join(dto.chatIds.map((x) => x.toString()));
   }
 
-  // socket.on('send_message', () => {  });
+  @UsePipes(
+    new ValidationPipe({
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  )
+  @UseFilters(SocketCatchHttpExceptionFilter)
+  @UseGuards(SocketBearerTokenGuard)
   @SubscribeMessage('send_message')
+  // socket.on('send_message', () => {  });
   async sendMessage(
-    @MessageBody()
-    dto: CreateMessagesDto,
-    @ConnectedSocket() socket: Socket,
+    @MessageBody() dto: CreateMessagesDto,
+    @ConnectedSocket() socket: Socket & { user: UsersModel },
   ) {
     const chatExists = await this.chatsService.checkIfChatExists(dto.chatId);
 
@@ -98,7 +126,10 @@ export class ChatsGateway implements OnGatewayConnection {
       );
     }
 
-    const message = await this.messageService.createMessage(dto);
+    const message = await this.messageService.createMessage(
+      dto,
+      socket.user.id,
+    );
 
     // Broadcasting(브로드캐스팅) - 이방에서 현재 소켓(나)만 빼고 메시지를 보내는 기능
     // socket - 현재 소켓의 상태는 나를 제외한 상태
