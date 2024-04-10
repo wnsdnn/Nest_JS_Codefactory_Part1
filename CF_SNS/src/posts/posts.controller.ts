@@ -18,7 +18,7 @@ import { User } from '../users/decorator/user.decorator';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PaginatePostDto } from './dto/paginate-post-dto';
-import { UsersModel } from '../users/entities/users.entity';
+import { UsersModel } from '../users/entity/users.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImageModelType } from '../common/entity/iamge.entity';
 import { DataSource, QueryRunner } from 'typeorm';

@@ -3,7 +3,7 @@ import {
   ExecutionContext,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { UsersModel } from '../entities/users.entity';
+import { UsersModel } from '../entity/users.entity';
 
 // AccessTokenGuard 가드와 같이 사용할 예정
 export const User = createParamDecorator(

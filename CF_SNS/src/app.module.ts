@@ -1,11 +1,17 @@
-import { ClassSerializerInterceptor, MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PostsModule } from './posts/posts.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PostsModel } from './posts/entities/posts.entity';
+import { PostsModel } from './posts/entity/posts.entity';
 import { UsersModule } from './users/users.module';
-import { UsersModel } from './users/entities/users.entity';
+import { UsersModel } from './users/entity/users.entity';
 import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/common.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
@@ -25,6 +31,7 @@ import { LogMiddleware } from './common/middleware/log.middleware';
 import { ChatsModule } from './chats/chats.module';
 import { ChatsModel } from './chats/entity/chats.entity';
 import { MessagesModel } from './chats/messages/entity/message.entity';
+import { CommentsModule } from './posts/comments/comments.module';
 
 @Module({
   // imports - 다른 모듈을 불러올때 사용
@@ -62,6 +69,7 @@ import { MessagesModel } from './chats/messages/entity/message.entity';
     AuthModule,
     CommonModule,
     ChatsModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [
