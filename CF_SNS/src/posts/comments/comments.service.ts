@@ -14,12 +14,18 @@ export class CommentsService {
     private readonly commmonService: CommonService,
   ) {}
 
-  async paginateComments(dto: PaginateCommentDto) {
+  async paginateComments(dto: PaginateCommentDto, postId: number) {
     return this.commmonService.paginate(
       dto,
       this.commentRepository,
-      {},
-      'comments',
+      {
+        where: {
+          post: {
+            id: postId,
+          },
+        },
+      },
+      `posts/${postId}/comments`,
     );
   }
 
