@@ -24,6 +24,8 @@ import { DataSource, QueryRunner } from 'typeorm';
 import { PostsImagesService } from './image/images.service';
 import { TransactionInterceptor } from '../common/interceptor/transaction.interceptor';
 import { QueryRunnerDecorator } from '../common/decorator/query-runnder.decorator';
+import { Roles } from '../users/decorator/roles.decorator';
+import { RolesEnum } from '../users/entity/const/foles.const';
 
 @Controller('posts')
 export class PostsController {
@@ -118,6 +120,10 @@ export class PostsController {
   // 5) DELETE /posts/:id
   // id에 해당되는 POST를 삭제한다.
   @Delete(':id')
+  @UseGuards(AccessTokenGuard)
+  // 역할 기반 접근 제어
+  // RBACK -> Role Based Access Control
+  @Roles(RolesEnum.ADMIN)
   deletePost(@Param('id', ParseIntPipe) id: number) {
     this.postsService.deletePost(id);
   }

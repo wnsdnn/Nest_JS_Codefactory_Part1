@@ -26,7 +26,7 @@ export class CommentsModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(PostExistsMiddleware)
-      // 적용하고 싶은 Controller를 통으로 넣어줘도 됨 
+      // 적용하고 싶은 Controller를 통으로 넣어줘도 됨
       .forRoutes(CommentsController);
   }
 }
