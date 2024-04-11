@@ -18,6 +18,7 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { TransactionInterceptor } from '../../common/interceptor/transaction.interceptor';
 import { AccessTokenGuard } from '../../auth/guard/bearer-token.guard';
 import { UsersModel } from '../../users/entity/users.entity';
+import { UpdateCommentsDto } from './dto/update-comments.dto';
 
 @Controller('posts/:postId/comments')
 export class CommentsController {
@@ -72,9 +73,9 @@ export class CommentsController {
   @Patch(':commentId')
   @UseGuards(AccessTokenGuard)
   @UseInterceptors(TransactionInterceptor)
-  patchComment(
+  async patchComment(
     @Param('commentId', ParseIntPipe) commentId: number,
-    @Body() dto: CreateCommentDto,
+    @Body() dto: UpdateCommentsDto,
   ) {
     return this.commentsService.updateComment(commentId, dto);
   }
