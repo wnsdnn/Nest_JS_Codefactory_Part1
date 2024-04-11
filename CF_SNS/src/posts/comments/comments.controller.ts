@@ -9,13 +9,11 @@ import {
   Post,
   Query,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { PaginateCommentDto } from './dto/paginate-comment-dto';
 import { User } from '../../users/decorator/user.decorator';
 import { CreateCommentDto } from './dto/create-comment.dto';
-import { TransactionInterceptor } from '../../common/interceptor/transaction.interceptor';
 import { AccessTokenGuard } from '../../auth/guard/bearer-token.guard';
 import { UsersModel } from '../../users/entity/users.entity';
 import { UpdateCommentsDto } from './dto/update-comments.dto';
@@ -44,7 +42,6 @@ export class CommentsController {
 
   @Get()
   @UseGuards(AccessTokenGuard)
-  @UseInterceptors(TransactionInterceptor)
   getComments(
     @Param('postId', ParseIntPipe) postId: number,
     @Query() query: PaginateCommentDto,
@@ -54,14 +51,12 @@ export class CommentsController {
 
   @Get(':commentId')
   @UseGuards(AccessTokenGuard)
-  @UseInterceptors(TransactionInterceptor)
   getCommnet(@Param('commentId', ParseIntPipe) commentId: number) {
     return this.commentsService.getCommentById(commentId);
   }
 
   @Post()
   @UseGuards(AccessTokenGuard)
-  @UseInterceptors(TransactionInterceptor)
   async postComments(
     @User() user: UsersModel,
     @Param('postId', ParseIntPipe) postId,
@@ -72,7 +67,6 @@ export class CommentsController {
 
   @Patch(':commentId')
   @UseGuards(AccessTokenGuard)
-  @UseInterceptors(TransactionInterceptor)
   async patchComment(
     @Param('commentId', ParseIntPipe) commentId: number,
     @Body() dto: UpdateCommentsDto,
@@ -82,7 +76,6 @@ export class CommentsController {
 
   @Delete(':commentId')
   @UseGuards(AccessTokenGuard)
-  @UseInterceptors(TransactionInterceptor)
   deleteComment(@Param('commentId') commentId: number) {
     return this.commentsService.deleteComment(commentId);
   }
