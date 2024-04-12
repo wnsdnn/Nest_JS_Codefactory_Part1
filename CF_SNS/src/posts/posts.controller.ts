@@ -8,11 +8,9 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
-import { AccessTokenGuard } from '../auth/guard/bearer-token.guard';
 import { User } from '../users/decorator/user.decorator';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -82,7 +80,6 @@ export class PostsController {
   // rollback -> 원상복구 (오류나면 rollback 실행)
   @Post()
   // AccessToken값이 존재하는지 확인
-  @UseGuards(AccessTokenGuard)
   @UseInterceptors(FileInterceptor('image'))
   @UseInterceptors(TransactionInterceptor)
   async postPost(
@@ -122,7 +119,6 @@ export class PostsController {
   // 5) DELETE /posts/:id
   // id에 해당되는 POST를 삭제한다.
   @Delete(':id')
-  @UseGuards(AccessTokenGuard)
   // 역할 기반 접근 제어
   // RBACK -> Role Based Access Control
   @Roles(RolesEnum.ADMIN)
