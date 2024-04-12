@@ -34,6 +34,7 @@ import { MessagesModel } from './chats/messages/entity/message.entity';
 import { CommentsModule } from './posts/comments/comments.module';
 import { CommentsModel } from './posts/comments/entity/comments.entity';
 import { RolesGuard } from './users/guard/roles.guard';
+import { AccessTokenGuard } from './auth/guard/bearer-token.guard';
 
 @Module({
   // imports - 다른 모듈을 불러올때 사용
@@ -87,6 +88,10 @@ import { RolesGuard } from './users/guard/roles.guard';
     {
       provide: APP_INTERCEPTOR,
       useClass: ClassSerializerInterceptor,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AccessTokenGuard,
     },
     {
       // 이런식으로 app 전체에다가 등록하면 해당 Guard가 젤 먼저 실행된다

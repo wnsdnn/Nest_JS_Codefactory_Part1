@@ -26,6 +26,7 @@ import { TransactionInterceptor } from '../common/interceptor/transaction.interc
 import { QueryRunnerDecorator } from '../common/decorator/query-runnder.decorator';
 import { Roles } from '../users/decorator/roles.decorator';
 import { RolesEnum } from '../users/entity/const/foles.const';
+import { IsPublic } from '../common/decorator/is-public.decorator';
 
 @Controller('posts')
 export class PostsController {
@@ -43,6 +44,7 @@ export class PostsController {
   // 1) GET / posts
   // 모든 post를 다 가져온다.
   @Get('')
+  @IsPublic()
   // @UseInterceptors(LogInterceptor)
   getPosts(@Query() query: PaginatePostDto) {
     return this.postsService.paginatePosts(query);
@@ -50,7 +52,6 @@ export class PostsController {
 
   // POST /posts/random
   @Post('random')
-  @UseGuards(AccessTokenGuard)
   async postPostsRandom(@User() user: UsersModel) {
     await this.postsService.generatePosts(user.id);
 
@@ -61,6 +62,7 @@ export class PostsController {
   // id에 해당되는 post를 가져온다.
   // 예를 들어 id: 1인경구 id가 1인 포스트를 가져온다.
   @Get(':id')
+  @IsPublic()
   // @Params([value])안에 선언한 값(value)으로 url의 있는 값과 같은 이름의 값을 가져올수 있음
   //
   // ParseIntPipe를 써서 id를 number값으로 취급
@@ -125,6 +127,6 @@ export class PostsController {
   // RBACK -> Role Based Access Control
   @Roles(RolesEnum.ADMIN)
   deletePost(@Param('id', ParseIntPipe) id: number) {
-    this.postsService.deletePost(id);
+    return this.postsService.deletePost(id);
   }
 }
