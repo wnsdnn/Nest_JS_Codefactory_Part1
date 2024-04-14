@@ -25,7 +25,7 @@ import { QueryRunnerDecorator } from '../common/decorator/query-runnder.decorato
 import { Roles } from '../users/decorator/roles.decorator';
 import { RolesEnum } from '../users/entity/const/foles.const';
 import { IsPublic } from '../common/decorator/is-public.decorator';
-import { IsPostMineOrAdmin } from './guard/is-post-mine-or-admin.guard';
+import { IsPostMineOrAdminGuard } from './guard/is-post-mine-or-admin.guard';
 
 @Controller('posts')
 export class PostsController {
@@ -108,7 +108,7 @@ export class PostsController {
   // 4) PATCH /posts/:id
   // id에 해당되는 POST를 변경한다.
   @Patch(':postId')
-  @UseGuards(IsPostMineOrAdmin)
+  @UseGuards(IsPostMineOrAdminGuard)
   patchPost(
     @Param('postId', ParseIntPipe) id: number,
     // @Body('title') title?: st ring,

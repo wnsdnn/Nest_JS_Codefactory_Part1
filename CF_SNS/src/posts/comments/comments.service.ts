@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommentsModel } from './entity/comments.entity';
 import { Repository } from 'typeorm';
@@ -103,5 +99,16 @@ export class CommentsService {
     await this.commentRepository.delete(id);
 
     return id;
+  }
+
+  async isCommentMine(userId: number, commentId: number) {
+    return await this.commentRepository.exists({
+      where: {
+        id: commentId,
+        author: {
+          id: userId,
+        },
+      },
+    });
   }
 }

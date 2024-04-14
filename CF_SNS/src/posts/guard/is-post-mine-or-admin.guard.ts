@@ -1,7 +1,8 @@
 import {
   BadRequestException,
   CanActivate,
-  ExecutionContext, ForbiddenException,
+  ExecutionContext,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -11,7 +12,7 @@ import { Request } from 'express';
 import { UsersModel } from '../../users/entity/users.entity';
 
 @Injectable()
-export class IsPostMineOrAdmin implements CanActivate {
+export class IsPostMineOrAdminGuard implements CanActivate {
   constructor(private readonly postService: PostsService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -46,6 +47,6 @@ export class IsPostMineOrAdmin implements CanActivate {
       throw new ForbiddenException('권한이 없습니다.');
     }
 
-    return true
+    return true;
   }
 }

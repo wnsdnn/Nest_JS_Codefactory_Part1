@@ -14,10 +14,10 @@ import { CommentsService } from './comments.service';
 import { PaginateCommentDto } from './dto/paginate-comment-dto';
 import { User } from '../../users/decorator/user.decorator';
 import { CreateCommentDto } from './dto/create-comment.dto';
-import { AccessTokenGuard } from '../../auth/guard/bearer-token.guard';
 import { UsersModel } from '../../users/entity/users.entity';
 import { UpdateCommentsDto } from './dto/update-comments.dto';
 import { IsPublic } from '../../common/decorator/is-public.decorator';
+import { IsCommentMineOrAdminGuard } from './guard/is-comment-mine-or-admin.guard';
 
 @Controller('posts/:postId/comments')
 export class CommentsController {
@@ -66,6 +66,7 @@ export class CommentsController {
   }
 
   @Patch(':commentId')
+  @UseGuards(IsCommentMineOrAdminGuard)
   async patchComment(
     @Param('commentId', ParseIntPipe) commentId: number,
     @Body() dto: UpdateCommentsDto,
@@ -74,6 +75,7 @@ export class CommentsController {
   }
 
   @Delete(':commentId')
+  @UseGuards(IsCommentMineOrAdminGuard)
   deleteComment(@Param('commentId') commentId: number) {
     return this.commentsService.deleteComment(commentId);
   }
