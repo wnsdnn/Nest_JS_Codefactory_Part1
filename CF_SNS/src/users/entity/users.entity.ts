@@ -118,10 +118,9 @@ export class UsersModel extends BaseModel {
 
   // 내가 팔로우 하고 있는 사람들
   @OneToMany(() => UserFollowersModel, (ufm) => ufm.follower)
-  @JoinTable()
-  followers: UsersModel[];
+  followers: UserFollowersModel[];
 
   // 나를 팔로우 하고 있는 사람들
   @OneToMany(() => UserFollowersModel, (ufm) => ufm.followee)
-  followees: UsersModel[];
+  followees: UserFollowersModel[];
 }
