@@ -1,6 +1,7 @@
 import {
   Controller,
-  DefaultValuePipe, Delete,
+  DefaultValuePipe,
+  Delete,
   Get,
   Param,
   ParseBoolPipe,
@@ -8,12 +9,16 @@ import {
   Patch,
   Post,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Roles } from './decorator/roles.decorator';
 import { RolesEnum } from './entity/const/foles.const';
 import { User } from './decorator/user.decorator';
 import { UsersModel } from './entity/users.entity';
+import { TransactionInterceptor } from '../common/interceptor/transaction.interceptor';
+import { QueryRunner as QR } from 'typeorm';
+import { QueryRunnerDecorator } from '../common/decorator/query-runnder.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -56,21 +61,29 @@ export class UsersController {
 
   // 여기서 :id는 나를 팔로우할려는 상대 ID (나에게 팔로우 신청을 건 user id)
   @Patch('follow/:id/confirm')
+  @UseInterceptors(TransactionInterceptor)
   async patchFollowConfirm(
     @User() user: UsersModel,
     @Param('id', ParseIntPipe) followerId: number,
+    @QueryRunnerDecorator() qr: QR,
   ) {
-    await this.usersService.confirmFollow(followerId, user.id);
+    await this.usersService.confirmFollow(followerId, user.id, qr);
+
+    await this.usersService.incrementFollowerCount(user.id, qr);
 
     return true;
   }
 
   @Delete('follow/:id')
+  @UseInterceptors(TransactionInterceptor)
   async deleteFollow(
     @User() user: UsersModel,
     @Param('id', ParseIntPipe) followeeId: number,
+    @QueryRunnerDecorator() qr: QR,
   ) {
     await this.usersService.deleteFollow(user.id, followeeId);
+
+    await this.usersService.decrementFollowerCount(user.id, qr);
 
     return true;
   }
